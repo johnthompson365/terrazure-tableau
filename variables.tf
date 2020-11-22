@@ -12,22 +12,20 @@ variable "admin_password" {
 
 variable "prefix" {
   type    = string
-  default = "jtyoyoyo"
+  default = "TABLIN"
 }
 
 variable "tags" {
   type = map
 
   default = {
-    Environment = "Terraform JT"
-    Dept        = "JT Engineering"
+    Environment = "Tableau-Linux"
   }
 }
 
 variable "sku" {
   default = {
-    westus2 = "16.04-LTS"
-    eastus  = "18.04-LTS"
+    westus2 = "18.04-LTS"
   }
 }
 
