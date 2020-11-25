@@ -4,6 +4,5 @@
 /terraform-show-plan.json
 /terraform.tfstate
 /terraform.tfstate.backup
-/*.pem
 /terraform.tfvars
-
+linux_priv_key.pem
