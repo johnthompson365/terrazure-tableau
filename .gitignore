@@ -4,3 +4,6 @@
 /terraform-show-plan.json
 /terraform.tfstate
 /terraform.tfstate.backup
+/*.pem
+/terraform.tfvars
+
