@@ -5,11 +5,6 @@ variable "admin_username" {
   description = "Administrator for the VM"
 }
 
-variable "admin_password" {
-  type        = string
-  description = "Administrator password must meet complexity requirements"
-}
-
 variable "prefix" {
   type    = string
   default = "TABLIN"

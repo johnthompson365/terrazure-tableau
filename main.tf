@@ -111,56 +111,56 @@ resource "tls_private_key" "example_ssh" {
 output "tls_private_key" { value = tls_private_key.example_ssh.private_key_pem }
 
 # Create a Linux virtual machine
-resource "azurerm_virtual_machine" "vm" {
+resource "azurerm_linux_virtual_machine" "linux_vm" {
   name                  = "${var.prefix}-TFVM"
   location              = "westus2"
   resource_group_name   = azurerm_resource_group.rg.name
   network_interface_ids = [azurerm_network_interface.nic.id]
-  vm_size               = "Standard_DS1_v2"
+  size               = "Standard_DS1_v2"
+  admin_username = var.admin_username
 
-  storage_os_disk {
+  os_disk {
     name              = "${var.prefix}-OsDisk"
     caching           = "ReadWrite"
-    create_option     = "FromImage"
-    managed_disk_type = "Premium_LRS"
+    storage_account_type = "Premium_LRS"
     disk_size_gb = "64"
   }
 
-  storage_data_disk {
-    name              = "${var.prefix}-DataDisk"
-    caching           = "ReadWrite"
-    create_option     = "Empty"
-    managed_disk_type = "Premium_LRS"
-    lun = "1"
-    disk_size_gb = "127"
-  }
-
-  storage_image_reference {
+  source_image_reference {
     publisher = "Canonical"
     offer     = "UbuntuServer"
     sku       = lookup(var.sku, var.location)
     version   = "latest"
   }
 
-  os_profile {
-    computer_name  = "${var.prefix}-TFVM"
-    admin_username = var.admin_username
-    admin_password = var.admin_password
-  }
+computer_name  = "${var.prefix}-TFVM"
 
-  os_profile_linux_config {
-    disable_password_authentication = false
-  }
-  admin_ssh_key {
-    username       = "azureuser"
+
+admin_ssh_key {
+    username       = "jt365"
     public_key     = tls_private_key.example_ssh.public_key_openssh
  }
 }
 
+resource "azurerm_managed_disk" "DataDisk" {
+  name                 = "${var.prefix}-DataDisk"
+  location             = azurerm_resource_group.rg.location
+  resource_group_name  = azurerm_resource_group.rg.name
+  storage_account_type = "Premium_LRS"
+  create_option        = "Empty"
+  disk_size_gb         = 127
+}
+resource "azurerm_virtual_machine_data_disk_attachment" "DataDisk" {
+    managed_disk_id = azurerm_managed_disk.DataDisk.id
+    virtual_machine_id = azurerm_linux_virtual_machine.linux_vm.id
+    lun = "10"
+    caching = "ReadWrite"
+  }
+
 data "azurerm_public_ip" "ip" {
   name                = azurerm_public_ip.publicip.name
-  resource_group_name = azurerm_virtual_machine.vm.resource_group_name
-  depends_on          = [azurerm_virtual_machine.vm]
+  resource_group_name = azurerm_linux_virtual_machine.linux_vm.resource_group_name
+  depends_on          = [azurerm_linux_virtual_machine.linux_vm]
 }
 
 output "public_ip_address" {
