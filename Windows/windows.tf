@@ -1,3 +1,7 @@
+# WinRM Research - this is closest to my lab https://github.com/jmassardo/Azure-WinRM-Terraform
+# WinRM in a domain -> http://www.anniehedgie.com/terraform-and-winrm
+# Sample tested on W2012R2 https://github.com/Azure/azure-quickstart-templates/tree/master/201-vm-winrm-windows
+
 terraform {
   required_providers {
     azurerm = {
