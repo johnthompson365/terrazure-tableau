@@ -1,6 +1,8 @@
 # WinRM Research - this is closest to my lab https://github.com/jmassardo/Azure-WinRM-Terraform
 # WinRM in a domain -> http://www.anniehedgie.com/terraform-and-winrm
 # Sample tested on W2012R2 https://github.com/Azure/azure-quickstart-templates/tree/master/201-vm-winrm-windows
+# Later version with W2019 https://www.starwindsoftware.com/blog/azure-execute-commands-in-a-vm-through-terraform
+# https://stevenmurawski.com/2015/06/need-to-test-if-winrm-is-listening/
 
 terraform {
   required_providers {
@@ -64,7 +66,7 @@ resource "azurerm_network_security_group" "nsg" {
     destination_address_prefix = "*"
   }
   security_rule {
-    name                       = "mgmt_rule"
+    name                       = "Tableau-mgmt"
     priority                   = 1002
     direction                  = "Inbound"
     access                     = "Allow"
@@ -74,9 +76,22 @@ resource "azurerm_network_security_group" "nsg" {
     source_address_prefix      = "98.155.197.8"
     destination_address_prefix = "*"
   }
+  
+  security_rule {
+    name                       = "WinRM"
+    priority                   = 1003
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "5986"
+    source_address_prefix      = "98.155.197.8"
+    destination_address_prefix = "*"
+  }
+  
   security_rule {
     name                       = "web"
-    priority                   = 1003
+    priority                   = 1004
     direction                  = "Inbound"
     access                     = "Allow"
     protocol                   = "Tcp"
@@ -124,6 +139,10 @@ resource "azurerm_windows_virtual_machine" "windows_vm" {
     offer     = "WindowsServer"
     sku       = "2019-Datacenter"
     version   = "latest"
+  }
+
+  winrm_listener {
+    protocol = "Http"
   }
 }
 
