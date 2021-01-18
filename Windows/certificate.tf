@@ -62,14 +62,14 @@ resource "azurerm_key_vault_access_policy" "vm" {
 resource "azurerm_virtual_machine_extension" "keyvault_certificates" {
   count = var.key_vault_certificates_names != [] ? 1 : 0
 
-  name = "${azurerm_windows_virtual_machine.vm.name}-keyvaultextension"
+  name = "${azurerm_windows_virtual_machine.windows_vm.name}-keyvaultextension"
 
   publisher                  = "Microsoft.Azure.KeyVault"
   type                       = "KeyVaultForWindows"
   type_handler_version       = "1.0"
   auto_upgrade_minor_version = true
 
-  virtual_machine_id = azurerm_windows_virtual_machine.vm.id
+  virtual_machine_id = azurerm_windows_virtual_machine.windows_vm.id
 
   settings = jsonencode({
     secretsManagementSettings : {
