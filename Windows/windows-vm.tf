@@ -18,6 +18,7 @@ resource "azurerm_windows_virtual_machine" "windows_vm" {
   computer_name             = "${var.prefix}-TFVM"
   provision_vm_agent        = true
   enable_automatic_updates  = true
+  
   os_disk {
     name              = "${var.prefix}-OsDisk"
     caching           = "ReadWrite"
@@ -46,8 +47,6 @@ resource "azurerm_windows_virtual_machine" "windows_vm" {
       store = "My"
     }
   }
-
-
 
   # Auto-Login's required to configure WinRM
   additional_unattend_content {
@@ -95,4 +94,3 @@ resource "azurerm_network_interface" "nic" {
     public_ip_address_id          = azurerm_public_ip.publicip.id
   }
 }
-
