@@ -16,7 +16,7 @@ resource "null_resource" "winrm_connection_test" {
 
   connection {
     type     = "winrm"
-    host     = join("", azurerm_public_ip.public_ip.*.ip_address)
+    host     = join("", azurerm_public_ip.publicip.*.ip_address)
     port     = 5986
     https    = true
     user     = var.admin_username

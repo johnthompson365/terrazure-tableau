@@ -32,9 +32,9 @@ resource "azurerm_windows_virtual_machine" "windows_vm" {
     version   = "latest"
   }
 
-  winrm_listener {
-    protocol = "Http"
-  }
+  # winrm_listener {
+  #   protocol = "Http"
+  # }
 
   # copied from https://github.com/claranet/terraform-azurerm-windows-vm
 
@@ -94,15 +94,5 @@ resource "azurerm_network_interface" "nic" {
     private_ip_address_allocation = "dynamic"
     public_ip_address_id          = azurerm_public_ip.publicip.id
   }
-}
-
-data "azurerm_public_ip" "ip" {
-  name                = azurerm_public_ip.publicip.name
-  resource_group_name = azurerm_windows_virtual_machine.windows_vm.resource_group_name
-  depends_on          = [azurerm_windows_virtual_machine.windows_vm]
-}
-
-output "public_ip_address" {
-  value = data.azurerm_public_ip.ip.ip_address
 }
 
