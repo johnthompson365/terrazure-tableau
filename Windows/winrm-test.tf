@@ -29,7 +29,7 @@ resource "null_resource" "winrm_connection_test" {
 
   provisioner "remote-exec" {
     inline = [
-      "cd C:\\claranet",
+      "cd C:\\jt365",
       "dir",
     ]
   }
