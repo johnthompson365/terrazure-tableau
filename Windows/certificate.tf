@@ -53,7 +53,7 @@ resource "azurerm_key_vault_certificate" "winrm_certificate" {
 resource "azurerm_key_vault_access_policy" "vm" {
   key_vault_id = var.key_vault_id
 
-  object_id = azurerm_windows_virtual_machine.windows_vm.identity[0].principal_id
+  object_id = azurerm_windows_virtual_machine.windows_vm.identity.0.principal_id
   tenant_id = var.tenant_id #data.azurerm_client_config.current.tenant_id
 
   secret_permissions = ["get", "list"]
