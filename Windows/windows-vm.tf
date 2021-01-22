@@ -65,7 +65,7 @@ resource "azurerm_windows_virtual_machine" "windows_vm" {
   # }
 
   # https://docs.microsoft.com/en-us/azure/virtual-machines/custom-data
-    custom_data = file("./files/winrm.ps1")
+    custom_data    = base64encode(local.custom_data_content)
 }
 
 resource "azurerm_managed_disk" "DataDisk" {
