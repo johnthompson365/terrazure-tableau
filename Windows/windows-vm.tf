@@ -51,18 +51,21 @@ resource "azurerm_windows_virtual_machine" "windows_vm" {
   # Auto-Login's required to configure WinRM
   additional_unattend_content {
     setting = "AutoLogon"
-    content = "<AutoLogon><Password><Value>${local.admin_password_encoded}</Value></Password><Enabled>true</Enabled><LogonCount>1</LogonCount><Username>${var.admin_username}</Username></AutoLogon>"
+    content = "<AutoLogon><Password><Value>${var.admin_password}</Value></Password><Enabled>true</Enabled><LogonCount>1</LogonCount><Username>${var.admin_username}</Username></AutoLogon>"
   }
 
   # Unattend config is to enable basic auth in WinRM, required for the provisioner stage.
   additional_unattend_content {
     setting = "FirstLogonCommands"
-    content = file(format("%s/files/FirstLogonCommands.xml", path.module))
+    content = file("./files/FirstLogonCommands.xml") #file(format("%s/files/FirstLogonCommands.xml", path.module))
   }
 
-  identity {
-    type = "SystemAssigned"
-  }
+  # identity {
+  #   type = "SystemAssigned"
+  # }
+
+  # https://docs.microsoft.com/en-us/azure/virtual-machines/custom-data
+    custom_data = file("./files/winrm.ps1")
 }
 
 resource "azurerm_managed_disk" "DataDisk" {
