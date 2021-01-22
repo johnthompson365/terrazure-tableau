@@ -60,9 +60,9 @@ resource "azurerm_windows_virtual_machine" "windows_vm" {
     content = file("./files/FirstLogonCommands.xml") #file(format("%s/files/FirstLogonCommands.xml", path.module))
   }
 
-  # identity {
-  #   type = "SystemAssigned"
-  # }
+  identity {
+    type = "SystemAssigned"
+  }
 
   # https://docs.microsoft.com/en-us/azure/virtual-machines/custom-data
   # https://github.com/terraform-providers/terraform-provider-azurerm/issues/6138
