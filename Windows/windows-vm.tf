@@ -65,6 +65,7 @@ resource "azurerm_windows_virtual_machine" "windows_vm" {
   # }
 
   # https://docs.microsoft.com/en-us/azure/virtual-machines/custom-data
+  # https://github.com/terraform-providers/terraform-provider-azurerm/issues/6138
     custom_data    = base64encode(local.custom_data_content)
 }
 
