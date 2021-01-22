@@ -59,7 +59,7 @@ resource "azurerm_windows_virtual_machine" "windows_vm" {
     setting = "FirstLogonCommands"
     content = file("./files/FirstLogonCommands.xml") #file(format("%s/files/FirstLogonCommands.xml", path.module))
   }
-
+  # https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/overview
   identity {
     type = "SystemAssigned"
   }
