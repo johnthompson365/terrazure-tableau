@@ -38,7 +38,7 @@ resource "null_resource" "winrm_connection_test" {
     inline = [
       "cd C:\\jt365",
       "dir",
-      #"PowerShell.exe -ExecutionPolicy Bypass c:\\terraform\\config.ps1",
+      "PowerShell.exe -ExecutionPolicy Bypass -File c:\\jt365\\wintab-deploy.ps1",
     ]
   }
 }

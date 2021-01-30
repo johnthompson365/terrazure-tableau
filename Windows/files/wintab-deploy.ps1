@@ -25,7 +25,7 @@
 
 #v1
 
-$folder = "C:\tab\"  
+$folder = "C:\tab-deploy\"  
 $reg_file = $folder+"rg.json"
 $iDP_config = $folder+"cf.json"
 $other = $folder+"other.json"
