@@ -10,7 +10,7 @@ variable "admin_password" {
 
 variable "prefix" {
   type    = string
-  default = "TABWIN"
+  default = "ADFS"
 }
 
 variable "tags" {
@@ -21,14 +21,14 @@ variable "tags" {
   }
 }
 
-variable "resource_group" {
-  type = string
-  default = "rg-tableau"
-  }
+# variable "resource_group" {
+#   type = string
+#   default = "rg-tableau"
+#   }
 
 variable "location" {
   type = string
-  default = "westus"
+  default = "westus2"
   }
 
 variable "tenant_id" {
