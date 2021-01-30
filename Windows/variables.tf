@@ -10,7 +10,7 @@ variable "admin_password" {
 
 variable "prefix" {
   type    = string
-  default = "ADFS"
+  default = "TABWIN"
 }
 
 variable "tags" {

@@ -27,10 +27,18 @@ resource "null_resource" "winrm_connection_test" {
     insecure = true
   }
 
+  # https://www.terraform.io/docs/language/resources/provisioners/file.html
+  # Copies the myapp.conf file to /etc/myapp.conf
+  provisioner "file" {
+    source      = "files/wintab-deploy.ps1"
+    destination = "C:\\jt365\\wintab-deploy.ps1"
+  }
+
   provisioner "remote-exec" {
     inline = [
       "cd C:\\jt365",
       "dir",
+      #"PowerShell.exe -ExecutionPolicy Bypass c:\\terraform\\config.ps1",
     ]
   }
 }
