@@ -31,6 +31,11 @@ variable "location" {
   default = "westus"
   }
 
+variable "tenant_id" {
+  type        = string
+  description = "Input your Azure Teannt ID here"
+}
+
 variable "public_ip_sku" {
   description = "Sku for the public IP attached to the VM. Can be `null` if no public IP needed."
   type        = string
