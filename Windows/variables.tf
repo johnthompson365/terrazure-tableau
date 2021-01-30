@@ -21,16 +21,15 @@ variable "tags" {
   }
 }
 
+variable "resource_group" {
+  type = string
+  default = "rg-tableau"
+  }
 
 variable "location" {
   type = string
   default = "westus"
   }
-
-variable "tenant_id"{
-  type = string
-  default = "c63821c1-a09e-4b7c-b828-3cfff41a2dab"
-}
 
 variable "public_ip_sku" {
   description = "Sku for the public IP attached to the VM. Can be `null` if no public IP needed."

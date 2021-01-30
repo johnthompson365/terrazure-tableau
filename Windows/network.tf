@@ -1,6 +1,6 @@
 # Create a resource group
 resource "azurerm_resource_group" "rg" {
-  name     = "${var.prefix}-TFResourceGroup"
+  name     = var.resource_group
   location = var.location
   tags = var.tags
 }
