@@ -28,7 +28,7 @@ variable "tags" {
 
 variable "location" {
   type = string
-  default = "westus2"
+  default = "westus"
   }
 
 variable "tenant_id" {

@@ -59,6 +59,7 @@ resource "azurerm_key_vault_access_policy" "vm" {
   secret_permissions = ["get", "list", "purge"]
 }
 
+# Understand this!!!
 resource "azurerm_virtual_machine_extension" "keyvault_certificates" {
   count = var.key_vault_certificates_names != [] ? 1 : 0
 

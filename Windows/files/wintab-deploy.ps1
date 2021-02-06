@@ -1,27 +1,27 @@
 # Copied from https://github.com/Azure/azure-quickstart-templates/tree/master/tableau-server-single-node
 
-# Param(
-#     [string]$ts_admin_un,
-#     [string]$ts_admin_pass,
-#     [string]$reg_first_name,
-#     [string]$reg_last_name,
-#     [string]$reg_email,
-#     [string]$reg_company,
-#     [string]$reg_title,
-#     [string]$reg_department,
-#     [string]$reg_industry,
-#     [string]$reg_phone,
-#     [string]$reg_city,
-#     [string]$reg_state,
-#     [string]$reg_zip,
-#     [string]$reg_country,
-#     [string]$license_key,
-#     [string]$install_script_url,
-#     [string]$local_admin_user,
-#     [string]$local_admin_pass,
-#     [string]$ts_build,
-#     [string]$eula
-# )    
+
+# Looking at the Quickstart some parameters aren't included here - Source_CIDR, OS, Subscription. Also, install_script_url doesn't closely match the Azure menu, maybe it is _artifacts location?
+   $ts_admin_un = "jt365"
+   $ts_admin_pass = "EnterAzur3))"
+   $reg_first_name = "John"
+   $reg_last_name = "Thompson"
+   $reg_email = "johnthompson@tableau.com"
+   $reg_company = "Tableau"
+   $reg_title = "SE"
+   $reg_department = "IT"
+   $reg_industry = "Software"
+   $reg_phone = "3104299206"
+   $reg_city = "Los Angeles"
+   $reg_state = "CA"
+   $reg_zip = "90094"
+   $reg_country = "US"
+   $license_key = "trial"
+   #$install_script_url
+   $local_admin_user = "jt365"
+   $local_admin_pass = "EnterAzur3))"
+   $ts_build = "2020.1.3"
+   $eula = "Yes"
 
 #v1
 
@@ -52,53 +52,53 @@ function func_createFolder{
         }
 }
 
-# function func_regFile{ 
-#         ## 2. make registration.json
-#         #TODO: add parameter for accepting eula
-#    @{
-#         first_name = $reg_first_name
-#         last_name = $reg_last_name
-#         email = $reg_email
-#         # company = "$reg_company
-#         company = "$reg_company-azure-arm-windows"
-#         title = $reg_title
-#         department = $reg_department
-#         industry = $reg_industry
-#         phone = $reg_phone
-#         city = $reg_city
-#         state = $reg_state
-#         zip = $reg_zip
-#         country = $reg_country
-#         eula = $eula
-#     } | ConvertTo-Json | Out-File $reg_file 
-# }
+function func_regFile{ 
+        ## 2. make registration.json
+        #TODO: add parameter for accepting eula
+   @{
+        first_name = $reg_first_name
+        last_name = $reg_last_name
+        email = $reg_email
+        company = $reg_company
+        # company = "$reg_company-azure-arm-windows"
+        title = $reg_title
+        department = $reg_department
+        industry = $reg_industry
+        phone = $reg_phone
+        city = $reg_city
+        state = $reg_state
+        zip = $reg_zip
+        country = $reg_country
+        eula = $eula
+    } | ConvertTo-Json | Out-File $reg_file 
+}
 
-# function func_configFile{ 
-#     @{
-#        configEntities = @{
-#            identityStore= @{
-#                _type= "identityStoreType"
-#                type= "local"
-#            }
-#        }
-#    } | ConvertTo-Json| Out-File $iDP_config 
+function func_configFile{ 
+    @{
+       configEntities = @{
+           identityStore= @{
+               _type= "identityStoreType"
+               type= "local"
+           }
+       }
+   } | ConvertTo-Json| Out-File $iDP_config 
      
-# }
-# function func_Other{
-#     @{
-#         local_admin_user = $local_admin_user
-#         local_admin_pass = $local_admin_pass
-#         content_admin_user = $ts_admin_un
-#         content_admin_pass = $ts_admin_pass
-#         product_keys = $license_key
-#         ts_build = $ts_build
-#     } | ConvertTo-Json | Out-File $other 
+}
+function func_Other{
+    @{
+        local_admin_user = $local_admin_user
+        local_admin_pass = $local_admin_pass
+        content_admin_user = $ts_admin_un
+        content_admin_pass = $ts_admin_pass
+        product_keys = $license_key
+        ts_build = $ts_build
+    } | ConvertTo-Json | Out-File $other 
 
+    # https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_scopes?view=powershell-7.1
+    $global:ts_build = $(Get-Content -raw $other  | ConvertFrom-Json | Select-Object ts_build).ts_build
+    $global:product_keys = $(Get-Content -raw $other  | ConvertFrom-Json | Select-Object product_keys).product_keys
     
-#     $global:ts_build = $(Get-Content -raw $other  | ConvertFrom-Json | Select-Object ts_build).ts_build
-#     $global:product_keys = $(Get-Content -raw $other  | ConvertFrom-Json | Select-Object product_keys).product_keys
-    
-# }
+}
 
 function Write-ToLog ($text) {
     
@@ -335,9 +335,9 @@ function Write-ToLog ($text) {
 # }
 function func_main(){
     func_createFolder
-    # func_regFile
-    # func_configFile
-    # func_Other
+    func_regFile
+    func_configFile
+    func_Other
 
     # #Set paramaters for the Tableau Server version
     # func_Version -version $global:ts_build
