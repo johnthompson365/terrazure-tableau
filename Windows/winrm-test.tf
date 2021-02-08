@@ -28,10 +28,14 @@ resource "null_resource" "winrm_connection_test" {
   }
 
   # https://www.terraform.io/docs/language/resources/provisioners/file.html
-  # Copies the myapp.conf file to /etc/myapp.conf
   provisioner "file" {
     source      = "files/wintab-deploy.ps1"
     destination = "C:\\jt365\\wintab-deploy.ps1"
+  }
+
+  provisioner "file" {
+    source      = "files/wintab-deploy-original.ps1"
+    destination = "C:\\jt365\\wintab-deploy-original.ps1"
   }
 
   provisioner "remote-exec" {

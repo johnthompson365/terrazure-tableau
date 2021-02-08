@@ -55,36 +55,38 @@ resource "azurerm_key_vault_access_policy" "vm" {
 
   object_id = azurerm_windows_virtual_machine.windows_vm.identity.0.principal_id
   tenant_id = var.tenant_id #data.azurerm_client_config.current.tenant_id
-  certificate_permissions = ["purge"]
+  certificate_permissions = ["get", "list", "purge"]
   secret_permissions = ["get", "list", "purge"]
 }
 
-# Understand this!!!
-resource "azurerm_virtual_machine_extension" "keyvault_certificates" {
-  count = var.key_vault_certificates_names != [] ? 1 : 0
+# # Understand this!!!
+# resource "azurerm_virtual_machine_extension" "keyvault_certificates" {
+#   https://www.terraform.io/docs/language/meta-arguments/count.html
+#   # count = var.key_vault_certificates_names != [] ? 1 : 0
 
-  name = "${azurerm_windows_virtual_machine.windows_vm.name}-keyvaultextension"
+#   name = "${azurerm_windows_virtual_machine.windows_vm.name}-keyvaultextension"
 
-  publisher                  = "Microsoft.Azure.KeyVault"
-  type                       = "KeyVaultForWindows"
-  type_handler_version       = "1.0"
-  auto_upgrade_minor_version = true
+#   publisher                  = "Microsoft.Azure.KeyVault"
+#   type                       = "KeyVaultForWindows"
+#   type_handler_version       = "1.0"
+#   auto_upgrade_minor_version = true
 
-  virtual_machine_id = azurerm_windows_virtual_machine.windows_vm.id
+#   virtual_machine_id = azurerm_windows_virtual_machine.windows_vm.id
 
-  settings = jsonencode({
-    secretsManagementSettings : {
-      pollingIntervalInS       = tostring(var.key_vault_certificates_polling_rate)
-      certificateStoreName     = "MY"
-      certificateStoreLocation = "LocalMachine",
-      requiredInitialSync      = true
-      # https://docs.microsoft.com/en-us/azure/virtual-machines/extensions/key-vault-windows
-      # Your observed certificates URLs should be of the form https://myVaultName.vault.azure.net/secrets/myCertName.
-      # This is because the /secrets path returns the full certificate, including the private key, while the /certificates path does not.
-      # https://www.terraform.io/docs/language/functions/formatlist.html
-      observedCertificates     = formatlist("https://%s.vault.azure.net/secrets/%s", local.key_vault_name, var.key_vault_certificates_names)
-    }
-  })
+#   settings = jsonencode({
+#     secretsManagementSettings : {
+#       pollingIntervalInS       = tostring(var.key_vault_certificates_polling_rate)
+#       certificateStoreName     = "MY"
+#       certificateStoreLocation = "LocalMachine",
+#       requiredInitialSync      = true
+#       # https://docs.microsoft.com/en-us/azure/virtual-machines/extensions/key-vault-windows
+#       # Your observed certificates URLs should be of the form https://myVaultName.vault.azure.net/secrets/myCertName.
+#       # This is because the /secrets path returns the full certificate, including the private key, while the /certificates path does not.
+#       # https://www.terraform.io/docs/language/functions/formatlist.html
+#       # https://www.terraform.io/docs/language/functions/format.html
+#       observedCertificates     = formatlist("https://%s.vault.azure.net/secrets/%s", local.key_vault_name, var.key_vault_certificates_names)
+#     }
+#   })
 
-  depends_on = [azurerm_key_vault_access_policy.vm]
-}
+#   depends_on = [azurerm_key_vault_access_policy.vm]
+# }
