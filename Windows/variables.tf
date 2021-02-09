@@ -31,6 +31,11 @@ variable "location" {
   default = "westus"
   }
 
+variable "source_ip_address" {
+  type = string
+  default = "Specify your current IP address"
+  }
+
 variable "tenant_id" {
   type        = string
   description = "Input your Azure Teannt ID here"
