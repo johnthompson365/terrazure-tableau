@@ -1,8 +1,44 @@
 # copied from https://github.com/claranet/terraform-azurerm-windows-vm
 
+resource "azurerm_key_vault" "tabwinkv" {
+  name                        = "tabwinkv-jt365tb01"
+  location                    = azurerm_resource_group.rg.location
+  resource_group_name         = azurerm_resource_group.rg.name
+  enabled_for_disk_encryption = true
+  tenant_id                   = var.tenant_id
+  soft_delete_retention_days  = 7
+  purge_protection_enabled    = false
+
+  sku_name = "standard"
+}
+
+# https://github.com/terraform-providers/terraform-provider-azurerm/issues/4569
+resource "azurerm_key_vault_access_policy" "vm" {
+  key_vault_id = azurerm_key_vault.tabwinkv.id
+
+  object_id = azurerm_windows_virtual_machine.windows_vm.identity.0.principal_id
+  tenant_id = var.tenant_id #data.azurerm_client_config.current.tenant_id
+  certificate_permissions = [ 
+    "create",
+    "delete",
+    "deleteissuers",
+    "get",
+    "getissuers",
+    "import",
+    "list",
+    "listissuers",
+    "managecontacts",
+    "manageissuers",
+    "setissuers",
+    "update",
+    "purge"
+  ]
+  secret_permissions = ["get", "list", "purge"]
+}
+
 resource "azurerm_key_vault_certificate" "winrm_certificate" {
   name         = "winrm-${var.prefix}-cert"
-  key_vault_id = var.key_vault_id
+  key_vault_id = azurerm_key_vault.tabwinkv.id
 
   certificate_policy {
     issuer_parameters {
@@ -50,16 +86,7 @@ resource "azurerm_key_vault_certificate" "winrm_certificate" {
   }
 }
 
-resource "azurerm_key_vault_access_policy" "vm" {
-  key_vault_id = var.key_vault_id
-
-  object_id = azurerm_windows_virtual_machine.windows_vm.identity.0.principal_id
-  tenant_id = var.tenant_id #data.azurerm_client_config.current.tenant_id
-  certificate_permissions = ["get", "list", "purge"]
-  secret_permissions = ["get", "list", "purge"]
-}
-
-# # Understand this!!!
+# # Understand this or comment it out ;)   !!!
 # resource "azurerm_virtual_machine_extension" "keyvault_certificates" {
 #   https://www.terraform.io/docs/language/meta-arguments/count.html
 #   # count = var.key_vault_certificates_names != [] ? 1 : 0

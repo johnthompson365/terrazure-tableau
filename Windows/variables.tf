@@ -47,6 +47,7 @@ variable "public_ip_sku" {
   default     = "Standard"
 }
 
+# Presumes you have created the Key Vault in your subscription already
 variable "key_vault_id" {
   description = "Id of the Azure Key Vault to use for VM certificate"
   type        = string
