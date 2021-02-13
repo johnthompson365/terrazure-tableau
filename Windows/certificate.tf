@@ -11,7 +11,7 @@ resource "azurerm_key_vault" "tabwinkv" {
   tenant_id                   = var.tenant_id
   soft_delete_retention_days  = 7
   purge_protection_enabled    = false
-
+  enabled_for_deployment      = true
   sku_name = "standard"
 
   access_policy {
@@ -31,6 +31,7 @@ resource "azurerm_key_vault" "tabwinkv" {
       "manageissuers",
       "setissuers",
       "update",
+      "recover",
     ]
 
     key_permissions = [
