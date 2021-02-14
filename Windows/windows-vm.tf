@@ -12,7 +12,7 @@ resource "azurerm_windows_virtual_machine" "windows_vm" {
   location                  = var.location
   resource_group_name       = azurerm_resource_group.rg.name
   network_interface_ids     = [azurerm_network_interface.nic.id]
-  size                      = "Standard_D8s_v3"
+  size                      = "Standard_DS1_v2" #"Standard_D8s_v3"
   admin_username            = var.admin_username
   admin_password            = var.admin_password
   computer_name             = "${var.prefix}-TFVM"
