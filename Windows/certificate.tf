@@ -3,22 +3,76 @@
 # https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/client_config
 data "azurerm_client_config" "current" {}
 
-resource "azurerm_key_vault" "tabwinkv" {
-  name                        = "tabwinkv-jt365tb01"
-  location                    = azurerm_resource_group.rg.location
-  resource_group_name         = azurerm_resource_group.rg.name
-  enabled_for_disk_encryption = true
-  tenant_id                   = var.tenant_id
-  soft_delete_retention_days  = 7
-  purge_protection_enabled    = false
-  enabled_for_deployment      = true
-  sku_name = "standard"
+# resource "azurerm_key_vault" "tabwinkv" {
+#   name                        = "tabwinkv-jt365tb01"
+#   location                    = azurerm_resource_group.rg.location
+#   resource_group_name         = azurerm_resource_group.rg.name
+#   enabled_for_disk_encryption = true
+#   tenant_id                   = var.tenant_id
+#   soft_delete_retention_days  = 7
+#   purge_protection_enabled    = false
+#   enabled_for_deployment      = true
+#   sku_name = "standard"
 
-  access_policy {
-    tenant_id = var.tenant_id
-    object_id = data.azurerm_client_config.current.object_id
+#   access_policy {
+#     tenant_id = var.tenant_id
+#     object_id = data.azurerm_client_config.current.object_id
 
-    certificate_permissions = [
+#     certificate_permissions = [
+#       "create",
+#       "delete",
+#       "deleteissuers",
+#       "get",
+#       "getissuers",
+#       "import",
+#       "list",
+#       "listissuers",
+#       "managecontacts",
+#       "manageissuers",
+#       "setissuers",
+#       "update",
+#       "recover",
+#     ]
+
+#     key_permissions = [
+#       "backup",
+#       "create",
+#       "decrypt",
+#       "delete",
+#       "encrypt",
+#       "get",
+#       "import",
+#       "list",
+#       "purge",
+#       "recover",
+#       "restore",
+#       "sign",
+#       "unwrapKey",
+#       "update",
+#       "verify",
+#       "wrapKey",
+#     ]
+
+#     secret_permissions = [
+#       "backup",
+#       "delete",
+#       "get",
+#       "list",
+#       "purge",
+#       "recover",
+#       "restore",
+#       "set",
+#     ]
+#   }
+# }
+
+# https://github.com/terraform-providers/terraform-provider-azurerm/issues/4569
+resource "azurerm_key_vault_access_policy" "full_permissions" {
+  #key_vault_id = azurerm_key_vault.tabwinkv.id
+  key_vault_id = var.key_vault_id
+  object_id = data.azurerm_client_config.current.object_id #azurerm_windows_virtual_machine.windows_vm.identity.0.principal_id
+  tenant_id = var.tenant_id #data.azurerm_client_config.current.tenant_id
+  certificate_permissions = [
       "create",
       "delete",
       "deleteissuers",
@@ -63,37 +117,12 @@ resource "azurerm_key_vault" "tabwinkv" {
       "restore",
       "set",
     ]
-  }
 }
-
-# # https://github.com/terraform-providers/terraform-provider-azurerm/issues/4569
-# resource "azurerm_key_vault_access_policy" "vm" {
-#   key_vault_id = azurerm_key_vault.tabwinkv.id
-
-#   object_id = data.azurerm_client_config.current.object_id #azurerm_windows_virtual_machine.windows_vm.identity.0.principal_id
-#   tenant_id = var.tenant_id #data.azurerm_client_config.current.tenant_id
-#   certificate_permissions = [ 
-#     "create",
-#     "delete",
-#     "deleteissuers",
-#     "get",
-#     "getissuers",
-#     "import",
-#     "list",
-#     "listissuers",
-#     "managecontacts",
-#     "manageissuers",
-#     "setissuers",
-#     "update",
-#     "purge"
-#   ]
-#   secret_permissions = ["get", "list", "purge"]
-# }
 
 resource "azurerm_key_vault_certificate" "winrm_certificate" {
   name         = "winrm-${var.prefix}-cert"
-  key_vault_id = azurerm_key_vault.tabwinkv.id
-
+  # key_vault_id = azurerm_key_vault.tabwinkv.id
+  key_vault_id = var.key_vault_id
   certificate_policy {
     issuer_parameters {
       name = "Self"

@@ -38,7 +38,7 @@ variable "source_ip_address" {
 
 variable "tenant_id" {
   type        = string
-  description = "Input your Azure Teannt ID here"
+  description = "Input your Azure Tenant ID here"
 }
 
 variable "public_ip_sku" {
