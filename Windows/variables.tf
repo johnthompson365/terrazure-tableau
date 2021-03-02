@@ -48,11 +48,11 @@ variable "public_ip_sku" {
 }
 
 # Presumes you have created the Key Vault in your subscription already
-variable "key_vault_id" {
-  description = "Id of the Azure Key Vault to use for VM certificate"
-  type        = string
-  default     = "/subscriptions/95aa9dd0-4394-45e6-bcb3-7131f1989dbb/resourceGroups/rg-tableau/providers/Microsoft.KeyVault/vaults/tabwinkv"
-}
+# variable "key_vault_id" {
+#   description = "Id of the Azure Key Vault to use for VM certificate"
+#   type        = string
+#   default     = "/subscriptions/95aa9dd0-4394-45e6-bcb3-7131f1989dbb/resourceGroups/rg-tableau/providers/Microsoft.KeyVault/vaults/tabwinkv"
+# }
 
 variable "key_vault_certificates_names" {
   description = "List of Azure Key Vault certificates names to install in the VM"

@@ -40,8 +40,8 @@ resource "azurerm_windows_virtual_machine" "windows_vm" {
   # copied from https://github.com/claranet/terraform-azurerm-windows-vm
 
   secret {
-    #key_vault_id = azurerm_key_vault.tabwinkv.id
-    key_vault_id = var.key_vault_id
+    key_vault_id = azurerm_key_vault.tabwinkv.id
+    #key_vault_id = var.key_vault_id
     certificate {
       url   = azurerm_key_vault_certificate.winrm_certificate.secret_id
       store = "My"
