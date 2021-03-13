@@ -1,7 +1,4 @@
-$a = New-ScheduledTaskAction -Execute 'Powershell.exe' `
-
-  -Execute "c:\\jt365\\wintab-deploy-original.ps1"
-
+$a = New-ScheduledTaskAction -Execute 'Powershell.exe' -Argument "c:\\jt365\\wintab-deploy-original.ps1"    
 $t = New-ScheduledTaskTrigger -AtLogon
 $p = New-ScheduledTaskPrincipal -GroupId "BUILTIN\Administrators" -RunLevel Highest
 
