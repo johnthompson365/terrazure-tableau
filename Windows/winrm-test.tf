@@ -29,7 +29,7 @@ resource "null_resource" "winrm_connection_test" {
 
   # https://www.terraform.io/docs/language/resources/provisioners/file.html
   provisioner "file" {
-    source      = "files/wintab-deploy.ps1"
+    source      = "files/New-ScheduledTask.ps1"
     destination = "C:\\jt365\\New-ScheduledTask.ps1"
   }
 
