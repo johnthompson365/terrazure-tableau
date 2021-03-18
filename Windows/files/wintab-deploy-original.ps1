@@ -2,8 +2,8 @@
 
 
 # Looking at the Quickstart some parameters aren't included here - Source_CIDR, OS, Subscription. Also, install_script_url doesn't closely match the Azure menu, maybe it is _artifacts location?
-   $ts_admin_un = "jt365"
-   $ts_admin_pass = "EnterAzur3))"
+   $ts_admin_un = "terrazure365"
+   $ts_admin_pass = "Elkajsdewdiut9823746o@i87"
    $reg_first_name = "John"
    $reg_last_name = "Thompson"
    $reg_email = "johnthompson@tableau.com"
@@ -11,15 +11,15 @@
    $reg_title = "SE"
    $reg_department = "IT"
    $reg_industry = "Software"
-   $reg_phone = "3104299206"
+   $reg_phone = "3105558765"
    $reg_city = "Los Angeles"
    $reg_state = "CA"
-   $reg_zip = "90094"
+   $reg_zip = "90210"
    $reg_country = "US"
    $license_key = "trial"
    #$install_script_url
-   $local_admin_user = "jt365"
-   $local_admin_pass = "EnterAzur3))"
+   $local_admin_user = "terrazure365"
+   $local_admin_pass = "Elkajsdewdiut9823746o@i87"
    $ts_build = "2020.1.3"
    $eula = "Yes"
 
@@ -153,10 +153,17 @@ function func_Download($folder, $log_file, $event_file,$version_major, $version_
             Write-ToLog -text  $($folder+$DownloadFile) ' exists'
         }
         else
-        { 
-            Write-ToLog -text "Starting Tableau Server media download..." 
-            Write-ToLog -text "Start-BitsTransfer -Source $url -Destination $($folder+$DownloadFile) -TransferType Download -Priority High"  
-            Start-BitsTransfer -Source $url -Destination $($folder+$DownloadFile) -TransferType Download -Priority High 
+        {   # https://docs.microsoft.com/en-us/windows/win32/bits/using-windows-powershell-to-create-bits-transfer-jobs?redirectedfrom=MSDN
+            Write-ToLog -text "Starting Tableau Server media download..."
+            # Write-ToLog -text "Invoke-WebRequest -Uri $url -OutFile $($folder+$DownloadFile)"  
+            # Invoke-WebRequest -Uri 'https://download.sysinternals.com/files/Handle.zip' -OutFile C:\handle.zi Expand-Archive -Path C:\handle.zip
+            # Invoke-WebRequest -Uri $url -OutFile $($folder+$DownloadFile)
+            Write-ToLog -text "System.Net.WebClient file download" 
+            # https://github.com/jmassardo/Azure-WinRM-Terraform/blob/master/files/config.ps1
+            # $webClient = [System.Net.WebClient]::new()     
+            [System.Net.WebClient]::new().DownloadFile($url,$($folder+$DownloadFile)) 
+            # Write-ToLog -text "Start-BitsTransfer -Source $url -Destination $($folder+$DownloadFile) -TransferType Download -Priority High" 
+            # Start-BitsTransfer -Source $url -Destination $($folder+$DownloadFile) -TransferType Download -Priority High 
             Write-ToLog -text "Tableau Server media download completed successfully"    
         }
 

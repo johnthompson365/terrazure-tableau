@@ -3,7 +3,7 @@
 
 # Looking at the Quickstart some parameters aren't included here - Source_CIDR, OS, Subscription. Also, install_script_url doesn't closely match the Azure menu, maybe it is _artifacts location?
    $ts_admin_un = "jt365"
-   $ts_admin_pass = "EnterAzur3))"
+   $ts_admin_pass = "Elkajsdewdiut9823746o@i876!"
    $reg_first_name = "John"
    $reg_last_name = "Thompson"
    $reg_email = "johnthompson@tableau.com"
@@ -11,15 +11,15 @@
    $reg_title = "SE"
    $reg_department = "IT"
    $reg_industry = "Software"
-   $reg_phone = "3104299206"
+   $reg_phone = "3105558765"
    $reg_city = "Los Angeles"
    $reg_state = "CA"
-   $reg_zip = "90094"
+   $reg_zip = "90210"
    $reg_country = "US"
    $license_key = "trial"
    #$install_script_url
    $local_admin_user = "jt365"
-   $local_admin_pass = "EnterAzur3))"
+   $local_admin_pass = "Elkajsdewdiut9823746o@i876!"
    $ts_build = "2020.1.3"
    $eula = "Yes"
 
