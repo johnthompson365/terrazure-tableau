@@ -1,7 +1,7 @@
 # https://stackoverflow.com/questions/13965997/set-a-scheduled-task-to-run-when-user-isnt-logged-in
 # https://sid-500.com/2017/07/26/how-to-automatically-start-powershell-at-every-logon/
 
-$a = New-ScheduledTaskAction -Execute 'Powershell.exe' -Argument '-NoProfile -ExecutionPolicy Bypass "C:\jt365\wintab-deploy-original.ps1"'    
+$a = New-ScheduledTaskAction -Execute 'Powershell.exe' -Argument '-NoProfile -ExecutionPolicy Bypass "C:\jt365\bob.ps1"'    
 $p = New-ScheduledTaskPrincipal -GroupId "BUILTIN\Administrators" -LogonType Interactive -RunLevel Highest 
 $t = New-ScheduledTaskTrigger -AtLogon
 $s = New-ScheduledTaskSettingsSet

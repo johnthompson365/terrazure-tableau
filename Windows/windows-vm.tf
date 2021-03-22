@@ -32,6 +32,10 @@ resource "azurerm_windows_virtual_machine" "windows_vm" {
   provision_vm_agent        = true
   enable_automatic_updates  = true
   
+  # https://docs.microsoft.com/en-us/azure/virtual-machines/custom-data
+  # https://github.com/terraform-providers/terraform-provider-azurerm/issues/6138
+  # custom_data    = base64encode(local.custom_data_content)
+  
   os_disk {
     name              = "${var.prefix}-OsDisk"
     caching           = "ReadWrite"
@@ -45,42 +49,31 @@ resource "azurerm_windows_virtual_machine" "windows_vm" {
     sku       = "2019-Datacenter"
     version   = "latest"
   }
-}
 
-#   winrm_listener {
-#     protocol = "Http"
-#   }
+  # secret {
+  #   key_vault_id = azurerm_key_vault.tabwinkv.id
+  #   #key_vault_id = var.key_vault_id
+  #   certificate {
+  #     url   = azurerm_key_vault_certificate.winrm_certificate.secret_id
+  #     store = "My"
+  #   }
+  # }
+  
+  # # Auto-Login's required to configure WinRM
+  # additional_unattend_content {
+  #   setting = "AutoLogon"
+  #   content = "<AutoLogon><Password><Value>${var.admin_password}</Value></Password><Enabled>true</Enabled><LogonCount>1</LogonCount><Username>${var.admin_username}</Username></AutoLogon>"
+  # }
 
-# copied from https://github.com/claranet/terraform-azurerm-windows-vm
-
-  secret {
-    key_vault_id = azurerm_key_vault.tabwinkv.id
-    #key_vault_id = var.key_vault_id
-    certificate {
-      url   = azurerm_key_vault_certificate.winrm_certificate.secret_id
-      store = "My"
-    }
-  }
-}
-  # Auto-Login's required to configure WinRM
-  additional_unattend_content {
-    setting = "AutoLogon"
-    content = "<AutoLogon><Password><Value>${var.admin_password}</Value></Password><Enabled>true</Enabled><LogonCount>1</LogonCount><Username>${var.admin_username}</Username></AutoLogon>"
-  }
-
-  # Unattend config is to enable basic auth in WinRM, required for the provisioner stage.
-  additional_unattend_content {
-    setting = "FirstLogonCommands"
-    content = file("./files/FirstLogonCommands.xml") #file(format("%s/files/FirstLogonCommands.xml", path.module))
-  }
-  # https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/overview
-  identity {
-    type = "SystemAssigned"
-  }
-
-  # https://docs.microsoft.com/en-us/azure/virtual-machines/custom-data
-  # https://github.com/terraform-providers/terraform-provider-azurerm/issues/6138
-    custom_data    = base64encode(local.custom_data_content)
+  # # Unattend config is to enable basic auth in WinRM, required for the provisioner stage.
+  # additional_unattend_content {
+  #   setting = "FirstLogonCommands"
+  #   content = file("./files/FirstLogonCommands.xml") #file(format("%s/files/FirstLogonCommands.xml", path.module))
+  # }
+  # # https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/overview
+  # identity {
+  #   type = "SystemAssigned"
+  # }
 }
 
 # resource "azurerm_managed_disk" "DataDisk" {
@@ -99,32 +92,32 @@ resource "azurerm_windows_virtual_machine" "windows_vm" {
 #     caching = "ReadWrite"
 # }
 
-# # https://github.com/MicrosoftDocs/azure-docs/issues/10862
-# # https://docs.microsoft.com/en-us/cli/azure/vm/extension/image?view=azure-cli-latest
-# # Found I had to use a minor version, not a patch e.g. 1.10 not 1.10.5 - Maybe I need to use the minor version upgrade thingy?
-# # Keep on getting this error after 30 minutes but the installtakes longer, around 40 minutes! Error: Future#WaitForCompletion: context has been cancelled: StatusCode=200 -- Original Error: context deadline exceeded
-# resource "azurerm_virtual_machine_extension" "tableau" {
-#   name                 = "${var.prefix}-TFVM"
-#   virtual_machine_id   = azurerm_windows_virtual_machine.windows_vm.id
-#   publisher            = "Microsoft.Compute"
-#   type                 = "CustomScriptExtension"
-#   type_handler_version = "1.10"
+# https://github.com/MicrosoftDocs/azure-docs/issues/10862
+# https://docs.microsoft.com/en-us/cli/azure/vm/extension/image?view=azure-cli-latest
+# Found I had to use a minor version, not a patch e.g. 1.10 not 1.10.5 - Maybe I need to use the minor version upgrade thingy?
+# Keep on getting this error after 30 minutes but the installtakes longer, around 40 minutes! Error: Future#WaitForCompletion: context has been cancelled: StatusCode=200 -- Original Error: context deadline exceeded
+resource "azurerm_virtual_machine_extension" "tableau" {
+  name                 = "${var.prefix}-TFVM"
+  virtual_machine_id   = azurerm_windows_virtual_machine.windows_vm.id
+  publisher            = "Microsoft.Compute"
+  type                 = "CustomScriptExtension"
+  type_handler_version = "1.10"
 
-#  timeouts {
-#     create = "60m"
-#     delete = "2h"
-#   }
+ timeouts {
+    create = "60m"
+    delete = "2h"
+  }
 
 
-#   protected_settings = <<PROTECTED_SETTINGS
-#     {
-#       "commandToExecute": "powershell.exe -Command \"./wintab-deploy-original.ps1; exit 0;\""
-#     }
-#   PROTECTED_SETTINGS
+  protected_settings = <<PROTECTED_SETTINGS
+    {
+      "commandToExecute": "powershell.exe -Command \"./wintab-deploy-original.ps1; exit 0;\""
+    }
+  PROTECTED_SETTINGS
 
-#   settings = <<SETTINGS
-#     {
-#         "fileUris": ["https://raw.githubusercontent.com/johnthompson365/terrazure-tableau/master/Windows/files/wintab-deploy-original.ps1"]
-#     }
-# SETTINGS
-# }
+  settings = <<SETTINGS
+    {
+        "fileUris": ["https://raw.githubusercontent.com/johnthompson365/terrazure-tableau/master/Windows/files/wintab-deploy-original.ps1"]
+    }
+  SETTINGS
+}

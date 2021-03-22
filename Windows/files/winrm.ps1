@@ -13,6 +13,10 @@ winrm create winrm/config/Listener?Address=*+Transport=HTTPS "@{Hostname=`"$Comp
 Write-Host "Enabling Basic Authentication.."
 winrm set winrm/config/service/Auth "@{Basic=`"true`"}"
 
+# https://docs.xebialabs.com/v.9.5/deploy/how-to/troubleshoot-a-winrm-connection/ 
+Write-Host "Set the Max Timeout for WinRM to 45 minutes"
+winrm set winrm/config @{MaxTimeoutms="27000000"}
+
 Write-Host "Re-starting the WinRM Service"
 net stop winrm
 net start winrm

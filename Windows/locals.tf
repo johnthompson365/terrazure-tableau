@@ -18,8 +18,8 @@ locals {
 # explanation https://github.com/terraform-providers/terraform-provider-azurerm/issues/4065
 
     #custom_data_params  = "Param($ComputerName = \"${local.vm_name}\")"
-    custom_data_params  = "Param($ComputerName = \"${var.prefix}-TFVM\")"
-    custom_data_content = "${local.custom_data_params} ${file(format("%s/files/winrm.ps1", path.module))}"
+    # custom_data_params  = "Param($ComputerName = \"${var.prefix}-TFVM\")"
+    # custom_data_content = "${local.custom_data_params} ${file(format("%s/files/winrm.ps1", path.module))}"
 
 #   admin_password_encoded = replace(replace(replace(replace(replace(var.admin_password, "&[^#]", "&#38;"), ">", "&#62;"), "<", "&#60;"), "'", "&#39;"), "\"", "&#34;")
 

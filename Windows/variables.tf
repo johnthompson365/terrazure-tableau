@@ -48,32 +48,32 @@ variable "public_ip_sku" {
 }
 
 # Presumes you have created the Key Vault in your subscription already
-variable "key_vault_id" {
-  description = "Id of the Azure Key Vault to use for VM certificate"
-  type        = string
-  default     = "/subscriptions/95aa9dd0-4394-45e6-bcb3-7131f1989dbb/resourceGroups/rg-tableau/providers/Microsoft.KeyVault/vaults/tabwinkv"
-}
+# variable "key_vault_id" {
+#   description = "Id of the Azure Key Vault to use for VM certificate"
+#   type        = string
+#   default     = "/subscriptions/95aa9dd0-4394-45e6-bcb3-7131f1989dbb/resourceGroups/rg-tableau/providers/Microsoft.KeyVault/vaults/tabwinkv"
+# }
 
-variable "key_vault_certificates_names" {
-  description = "List of Azure Key Vault certificates names to install in the VM"
-  type        = list(string)
-  default     = []
-}
+# variable "key_vault_certificates_names" {
+#   description = "List of Azure Key Vault certificates names to install in the VM"
+#   type        = list(string)
+#   default     = []
+# }
 
-variable "certificate_validity_in_months" {
-  description = "Amount of months for certificate validity"
-  type        = number
-  default     = 48
-}
+# variable "certificate_validity_in_months" {
+#   description = "Amount of months for certificate validity"
+#   type        = number
+#   default     = 48
+# }
 
-variable "key_vault_certificates_polling_rate" {
-  description = "Polling rate (in seconds) for Key Vault certificates retrieval"
-  type        = number
-  default     = 300
-}
+# variable "key_vault_certificates_polling_rate" {
+#   description = "Polling rate (in seconds) for Key Vault certificates retrieval"
+#   type        = number
+#   default     = 300
+# }
 
-variable "key_vault_certificates_store_name" {
-  description = "Name of the cetrificate store on which install the Key Vault certificates"
-  type        = string
-  default     = "MY"
-}
+# variable "key_vault_certificates_store_name" {
+#   description = "Name of the cetrificate store on which install the Key Vault certificates"
+#   type        = string
+#   default     = "MY"
+# }
