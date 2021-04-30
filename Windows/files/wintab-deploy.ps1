@@ -2,8 +2,8 @@
 
 
 # Looking at the Quickstart some parameters aren't included here - Source_CIDR, OS, Subscription. Also, install_script_url doesn't closely match the Azure menu, maybe it is _artifacts location?
-   $ts_admin_un = "jt365"
-   $ts_admin_pass = "Elkajsdewdiut9823746o@i876!"
+   $ts_admin_un = "terrazure365"
+   $ts_admin_pass = "Elkajsdewdiut9823746o@i87"
    $reg_first_name = "John"
    $reg_last_name = "Thompson"
    $reg_email = "johnthompson@tableau.com"
@@ -18,8 +18,8 @@
    $reg_country = "US"
    $license_key = "trial"
    #$install_script_url
-   $local_admin_user = "jt365"
-   $local_admin_pass = "Elkajsdewdiut9823746o@i876!"
+   $local_admin_user = "terrazure365"
+   $local_admin_pass = "Elkajsdewdiut9823746o@i87"
    $ts_build = "2020.1.3"
    $eula = "Yes"
 
@@ -33,10 +33,10 @@ $log_file = $folder+"install.log"
 $event_file = $folder+"event.log"
 $bootstrapfile = "bootstrap.json"  
 
-# $global:major = ''
-# $global:minor = '' 
-# $global:hotfix = ''
-# $global:DownloadFile = ''
+$global:major = ''
+$global:minor = '' 
+$global:hotfix = ''
+$global:DownloadFile = ''
 
  
 function func_createFolder{
@@ -107,249 +107,257 @@ function Write-ToLog ($text) {
     Write-Output $message | Out-file $event_file -Append -Encoding default
 
 }
-# function func_Version ($version) {
+function func_Version ($version) {
    
-#     if(!$Version)
-#     {
-#         Write-Host "-Version is missing a value. It should be in the format xxxx.x.x like for example 2019.1.4 or type Trial to active a 14 day trial"
-#     }
-#     elseif($version.ToString().Length -ne 8)
-#     {
-#         Write-Host "-Version is in the wrong format. It should be in the format xxxx.x.x like for example 2019.1.4"
+    if(!$Version)
+    {
+        Write-Host "-Version is missing a value. It should be in the format xxxx.x.x like for example 2019.1.4 or type Trial to active a 14 day trial"
+    }
+    elseif($version.ToString().Length -ne 8)
+    {
+        Write-Host "-Version is in the wrong format. It should be in the format xxxx.x.x like for example 2019.1.4"
         
-#     }
+    }
 
-#     elseif($version.ToString().Length -eq 8)
-#             {
-#             if ($version -like '*.*')
-#             {
-#                 $global:major = $version.substring(0,4)
-#                 $global:minor = $version.substring(0,$version.lastindexof('.')).substring(5)
-#                 $global:hotfix = $version.substring($version.length-1)
+    elseif($version.ToString().Length -eq 8)
+            {
+            if ($version -like '*.*')
+            {
+                $global:major = $version.substring(0,4)
+                $global:minor = $version.substring(0,$version.lastindexof('.')).substring(5)
+                $global:hotfix = $version.substring($version.length-1)
                 
-#             }
-#             elseif ($version -like '*-*')
-#             {
-#                 $version = $version.ToString().replace('-','.') 
-#                 $global:major = $version.substring(0,4)
-#                 $global:minor = $version.substring(0,$version.lastindexof('.')).substring(5)
-#                 $global:hotfix = $version.substring($version.length-1)
+            }
+            elseif ($version -like '*-*')
+            {
+                $version = $version.ToString().replace('-','.') 
+                $global:major = $version.substring(0,4)
+                $global:minor = $version.substring(0,$version.lastindexof('.')).substring(5)
+                $global:hotfix = $version.substring($version.length-1)
                 
-#             }
-#         }
-#         #return $global:major, $global:minor, $global:hotfix
-# }
-# function func_Download($folder, $log_file, $event_file,$version_major, $version_minor, $version_hotfix){
+            }
+        }
+        # https://ss64.com/ps/return.html
+        #return $global:major, $global:minor, $global:hotfix
+}
+function func_Download($folder, $log_file, $event_file,$version_major, $version_minor, $version_hotfix){
     
-#     try{#Set the path  to the server version of Tableau that you want to download
-#         $global:DownloadFile = "TableauServer-64bit-"+$version_major+"-"+$version_minor+"-"+$version_hotfix+".exe"
-#         $url = "https://downloads.tableau.com/esdalt/"+$version_major+"."+$version_minor+"."+$version_hotfix+"/"+$DownloadFile
+    try{#Set the path  to the server version of Tableau that you want to download
+        $global:DownloadFile = "TableauServer-64bit-"+$version_major+"-"+$version_minor+"-"+$version_hotfix+".exe"
+        $url = "https://downloads.tableau.com/esdalt/"+$version_major+"."+$version_minor+"."+$version_hotfix+"/"+$DownloadFile
 
-#         Write-ToLog -text $url
-#         #Download the server installation file
-#         if(Test-Path $($folder+$global:DownloadFile))
-#         {    
-#             Write-ToLog -text  $($folder+$DownloadFile) ' exists'
-#         }
-#         else
-#         { 
-#             Write-ToLog -text "Starting Tableau Server media download..." 
-#             Write-ToLog -text "Start-BitsTransfer -Source $url -Destination $($folder+$DownloadFile) -TransferType Download -Priority High"  
-#             Start-BitsTransfer -Source $url -Destination $($folder+$DownloadFile) -TransferType Download -Priority High 
-#             Write-ToLog -text "Tableau Server media download completed successfully"    
-#         }
+        Write-ToLog -text $url
+        #Download the server installation file
+        if(Test-Path $($folder+$global:DownloadFile))
+        {    
+            Write-ToLog -text  $($folder+$DownloadFile) ' exists'
+        }
+        else
+        {   # https://docs.microsoft.com/en-us/windows/win32/bits/using-windows-powershell-to-create-bits-transfer-jobs?redirectedfrom=MSDN
+            Write-ToLog -text "Starting Tableau Server media download..."
+            # Write-ToLog -text "Invoke-WebRequest -Uri $url -OutFile $($folder+$DownloadFile)"  
+            # Invoke-WebRequest -Uri 'https://download.sysinternals.com/files/Handle.zip' -OutFile C:\handle.zi Expand-Archive -Path C:\handle.zip
+            # Invoke-WebRequest -Uri $url -OutFile $($folder+$DownloadFile)
+            Write-ToLog -text "System.Net.WebClient file download" 
+            # https://github.com/jmassardo/Azure-WinRM-Terraform/blob/master/files/config.ps1
+            # $webClient = [System.Net.WebClient]::new()     
+            [System.Net.WebClient]::new().DownloadFile($url,$($folder+$DownloadFile)) 
+            # Write-ToLog -text "Start-BitsTransfer -Source $url -Destination $($folder+$DownloadFile) -TransferType Download -Priority High" 
+            # Start-BitsTransfer -Source $url -Destination $($folder+$DownloadFile) -TransferType Download -Priority High 
+            Write-ToLog -text "Tableau Server media download completed successfully"    
+        }
 
-#     }
-#     catch
-#         {
-#             Write-ToLog -text $PSItem.Exception.Message
-#         }
-# }
+    }
+    catch
+        {
+            Write-ToLog -text $PSItem.Exception.Message
+        }
+}
 
-# function func_Install($file_path, $log_path)
-# {
+function func_Install($file_path, $log_path)
+{
     
-#         try {
-#                 if((Test-Path HKLM:\SOFTWARE\Tableau\) -eq $false)
-#                 {
-#                     Write-ToLog -text  "Starting Tableau Server installation"
-#                     if($global:major -le 2019 -and $global:minor -lt 4 -or $global:major -le 2018 ){
-#                         Write-Host -text "$file_path /install /silent /ACCEPTEULA = 1 /LOG $log_path"      
-#                         Start-Process -FilePath $file_path -ArgumentList " /install /silent /ACCEPTEULA = 1 /LOG '$log_path'" -Verb RunAs -Wait
-#                     }
-#                     elseif ($global:major -ge 2019 -and $global:minor -eq 4 -or $global:major -ge 2020) {
-#                         Write-ToLog -text "$file_path /install /passive ACCEPTEULA=1"
-#                         Start-Process -FilePath $file_path -ArgumentList " /install /passive ACCEPTEULA=1" -Verb RunAs -Wait  
-#                     }
+        try {
+                if((Test-Path HKLM:\SOFTWARE\Tableau\) -eq $false)
+                {
+                    Write-ToLog -text  "Starting Tableau Server installation"
+                    if($global:major -le 2019 -and $global:minor -lt 4 -or $global:major -le 2018 ){
+                        Write-Host -text "$file_path /install /silent /ACCEPTEULA = 1 /LOG $log_path"      
+                        Start-Process -FilePath $file_path -ArgumentList " /install /silent /ACCEPTEULA = 1 /LOG '$log_path'" -Verb RunAs -Wait
+                    }
+                    elseif ($global:major -ge 2019 -and $global:minor -eq 4 -or $global:major -ge 2020) {
+                        Write-ToLog -text "$file_path /install /passive ACCEPTEULA=1"
+                        Start-Process -FilePath $file_path -ArgumentList " /install /passive ACCEPTEULA=1" -Verb RunAs -Wait  
+                    }
                     
-#                     Write-ToLog -text "Tableau Server installation completed successfully"
-#                 }
-#                 else
-#                 {
-#                     Write-ToLog -text 'Tableau server is already installed'
-#                 }
+                    Write-ToLog -text "Tableau Server installation completed successfully"
+                }
+                else
+                {
+                    Write-ToLog -text 'Tableau server is already installed'
+                }
 
-#                 #Identifying path to TSM
-#                 #Get-ItemProperty -Path HKLM:\SOFTWARE\Tableau $version_full*
-#                 Write-ToLog -text "Adding TSM to local Windows system PATH"
+                #Identifying path to TSM
+                #Get-ItemProperty -Path HKLM:\SOFTWARE\Tableau $version_full*
+                Write-ToLog -text "Adding TSM to local Windows system PATH"
     
-#                 #Check if Tableau is installed on the Server
-#                 if((Test-Path HKLM:\SOFTWARE\Tableau\) -eq $true)
-#                 {
-#                     $reg_path = "HKLM:\SOFTWARE\Tableau\Tableau Server *\Directories"
-#                     #Get the AppVersion Property from the registry that contains the path to the 
-#                     if ( (Get-Item $reg_path | Get-ItemProperty | Select-Object Application).Application -eq '\$')
-#                     {
-#                         $packages =  ((Get-Item $reg_path | Get-ItemProperty | Select-Object Application).Application+"Packages")
-#                     }
-#                     else
-#                     {
-#                         $packages =  ((Get-Item $reg_path | Get-ItemProperty | Select-Object Application).Application+"\Packages")
-#                     }
-#                     Write-ToLog -text "$packages"
-#                     $bin = (Get-ItemProperty ($packages+"\bin.*") | Select-Object Name).Name
-#                     $global:tsm_path = $packages+"\"+$bin+"\";
+                #Check if Tableau is installed on the Server
+                if((Test-Path HKLM:\SOFTWARE\Tableau\) -eq $true)
+                {
+                    $reg_path = "HKLM:\SOFTWARE\Tableau\Tableau Server *\Directories"
+                    #Get the AppVersion Property from the registry that contains the path to the 
+                    if ( (Get-Item $reg_path | Get-ItemProperty | Select-Object Application).Application -eq '\$')
+                    {
+                        $packages =  ((Get-Item $reg_path | Get-ItemProperty | Select-Object Application).Application+"Packages")
+                    }
+                    else
+                    {
+                        $packages =  ((Get-Item $reg_path | Get-ItemProperty | Select-Object Application).Application+"\Packages")
+                    }
+                    Write-ToLog -text "$packages"
+                    $bin = (Get-ItemProperty ($packages+"\bin.*") | Select-Object Name).Name
+                    $global:tsm_path = $packages+"\"+$bin+"\";
                     
-#                     #Add TSM to Windows Path
-#                     $Env:path += $global:tsm_path
-#                 }
+                    #Add TSM to Windows Path
+                    $Env:path += $global:tsm_path
+                }
 
-#                 #Generate bootstrap file
-#                 if($Bootstrap -eq $true)
-#                 {
-#                     Write-ToLog -text  "Creating bootstrap file in $folder"
-#                     Invoke-Expression "tsm topology nodes get-bootstrap-file --file '$bootstrapfile'"
-#                 }
-#         }
-#         catch
-#             {
-#                 Write-ToLog -text $PSItem.Exception.Message
-#             }
-# }
+                #Generate bootstrap file
+                if($Bootstrap -eq $true)
+                {
+                    Write-ToLog -text  "Creating bootstrap file in $folder"
+                    Invoke-Expression "tsm topology nodes get-bootstrap-file --file '$bootstrapfile'"
+                }
+        }
+        catch
+            {
+                Write-ToLog -text $PSItem.Exception.Message
+            }
+}
  
-# function func_Configure($folder, $reg_file, $iDP_config, $log_file, $event_file, $license_key)
-# {
+function func_Configure($folder, $reg_file, $iDP_config, $log_file, $event_file, $license_key)
+{
                                 
-#             try{
+            try{
                 
-#                 $tsm = $global:tsm_path +"tsm.cmd"
-#                 $tabcmd = $global:tsm_path +"tabcmd.exe"
-#                 Write-ToLog $tsm
-#                 #Activate Tableau Server license
-#                 Write-ToLog -text  "Tableau Server License activation started"
+                $tsm = $global:tsm_path +"tsm.cmd"
+                $tabcmd = $global:tsm_path +"tabcmd.exe"
+                Write-ToLog $tsm
+                #Activate Tableau Server license
+                Write-ToLog -text  "Tableau Server License activation started"
 
-#                 #Activate Tableau server 14 day trial 
-#                 if($license_key.ToLower() -eq 'trial'){
-#                     Write-ToLog -text  "$tsm licenses activate -t"
-#                     Start-Process $tsm -ArgumentList " licenses activate -t" -Wait
-#                     Write-ToLog -text "Tableau Server 14 day Trial activated"
-#                 }
-#                 #Activate Tableau server 
-#                 elseif($license_key -match '^[0-9A-Za-z]{4}[-][0-9A-Za-z]{4}[-][0-9A-Za-z]{4}[-][0-9A-Za-z]{4}[-][0-9A-Za-z]{4}$'){
-#                     Write-ToLog -text  "$tsm licenses activate -k $license_key"
-#                     Start-Process $tsm -ArgumentList " licenses activate -k $license_key" -Wait
-#                     Write-ToLog -text "Tableau Server License activation completed successfully"
-#                 }
+                #Activate Tableau server 14 day trial 
+                if($license_key.ToLower() -eq 'trial'){
+                    Write-ToLog -text  "$tsm licenses activate -t"
+                    Start-Process $tsm -ArgumentList " licenses activate -t" -Wait
+                    Write-ToLog -text "Tableau Server 14 day Trial activated"
+                }
+                #Activate Tableau server 
+                elseif($license_key -match '^[0-9A-Za-z]{4}[-][0-9A-Za-z]{4}[-][0-9A-Za-z]{4}[-][0-9A-Za-z]{4}[-][0-9A-Za-z]{4}$'){
+                    Write-ToLog -text  "$tsm licenses activate -k $license_key"
+                    Start-Process $tsm -ArgumentList " licenses activate -k $license_key" -Wait
+                    Write-ToLog -text "Tableau Server License activation completed successfully"
+                }
                
-#                 #Register Tableau Server 
-#                 Write-ToLog -text "Starting Tableau Server registration"
-#                 Write-ToLog "$tsm register --file $reg_file"
-#                 Start-Process $tsm -ArgumentList " register --file $reg_file" -Wait
-#                 Write-ToLog -text "Completed Tableau Server registration"
+                #Register Tableau Server 
+                Write-ToLog -text "Starting Tableau Server registration"
+                Write-ToLog "$tsm register --file $reg_file"
+                Start-Process $tsm -ArgumentList " register --file $reg_file" -Wait
+                Write-ToLog -text "Completed Tableau Server registration"
 
-#                 #Set local repository
-#                 Write-ToLog -text "Starting Tableau Server local Repository setup"
-#                 Write-ToLog -text "$tsm settings import -f $iDP_config"
-#                 Start-Process $tsm -ArgumentList " settings import -f $iDP_config" -Wait
-#                 Write-ToLog -text "Completed Tableau Server local Repository setup"
+                #Set local repository
+                Write-ToLog -text "Starting Tableau Server local Repository setup"
+                Write-ToLog -text "$tsm settings import -f $iDP_config"
+                Start-Process $tsm -ArgumentList " settings import -f $iDP_config" -Wait
+                Write-ToLog -text "Completed Tableau Server local Repository setup"
 
-#                 Write-ToLog -text "Setting Tableau Server Run As Service Account"
-#                 if($local_admin_user -match "[\\]" -or $local_admin_user -match "@") 
-#                 {
-#                     Write-ToLog -text "$tsm configuration set -k service.runas.username -v $local_admin_user"
-#                     Start-Process $tsm -ArgumentList " configuration set -k service.runas.username -v $local_admin_user"  -Wait
-#                 }
-#                 elseif($local_admin_user -notmatch "[\\]" -or $local_admin_user -notmatch "@")
-#                 {
-#                     Write-ToLog -text "$tsm configuration set -k service.runas.username -v .\$local_admin_user"
-#                     Start-Process $tsm -ArgumentList " configuration set -k service.runas.username -v .\$local_admin_user" -Wait
-#                 }
-#                 Write-ToLog -text "Completed configuring Tableau Server Run As Service Account"
+                Write-ToLog -text "Setting Tableau Server Run As Service Account"
+                if($local_admin_user -match "[\\]" -or $local_admin_user -match "@") 
+                {
+                    Write-ToLog -text "$tsm configuration set -k service.runas.username -v $local_admin_user"
+                    Start-Process $tsm -ArgumentList " configuration set -k service.runas.username -v $local_admin_user"  -Wait
+                }
+                elseif($local_admin_user -notmatch "[\\]" -or $local_admin_user -notmatch "@")
+                {
+                    Write-ToLog -text "$tsm configuration set -k service.runas.username -v .\$local_admin_user"
+                    Start-Process $tsm -ArgumentList " configuration set -k service.runas.username -v .\$local_admin_user" -Wait
+                }
+                Write-ToLog -text "Completed configuring Tableau Server Run As Service Account"
 
-#                 Write-ToLog -text "Setting Tableau Server Run As Service Account password"
-#                 Write-ToLog -text "$tsm configuration set -k service.runas.password -v $local_admin_pass"
-#                 Start-Process $tsm -ArgumentList " configuration set -k service.runas.password -v $local_admin_pass" -Wait
-#                 Write-ToLog -text "Completed configuring Tableau Server Run As Service Account password"    
+                Write-ToLog -text "Setting Tableau Server Run As Service Account password"
+                Write-ToLog -text "$tsm configuration set -k service.runas.password -v $local_admin_pass"
+                Start-Process $tsm -ArgumentList " configuration set -k service.runas.password -v $local_admin_pass" -Wait
+                Write-ToLog -text "Completed configuring Tableau Server Run As Service Account password"    
 
-#                 #Apply pending changes
-#                 Write-ToLog -text "Applying pending TSM changes"
-#                 Write-ToLog -text "$tsm pending-changes apply"
-#                 Start-Process $tsm -ArgumentList " pending-changes apply" -Wait
-#                 Write-ToLog -text "TSM changes applied successfully."
+                #Apply pending changes
+                Write-ToLog -text "Applying pending TSM changes"
+                Write-ToLog -text "$tsm pending-changes apply"
+                Start-Process $tsm -ArgumentList " pending-changes apply" -Wait
+                Write-ToLog -text "TSM changes applied successfully."
 
-#                 #Initialize configuration
-#                 Write-ToLog -text "Initializing Tableau Server"
-#                 Write-ToLog -text "$tsm initialize -r"
-#                 Start-Process $tsm -ArgumentList " initialize -r " -Wait
-#                 Write-ToLog -text "Tableau Server initialized"
+                #Initialize configuration
+                Write-ToLog -text "Initializing Tableau Server"
+                Write-ToLog -text "$tsm initialize -r"
+                Start-Process $tsm -ArgumentList " initialize -r " -Wait
+                Write-ToLog -text "Tableau Server initialized"
 
-#                 #Initialize configuration
-#                 Write-ToLog -text "Adding initial Admin user"
-#                 Write-ToLog -text "$tabcmd initialuser -s http://localhost -u $ts_admin_un -p $ts_admin_pass"
-#                 Start-Process $tabcmd -ArgumentList " initialuser -s http://localhost -u $ts_admin_un -p $ts_admin_pass"  -Wait
-#                 Write-ToLog -text "Initial Admin user added"
-#             } 
-#             catch
-#             {
-#                 Write-ToLog -text $PSItem.Exception.Message
-#             }
-# }
+                #Initialize configuration
+                Write-ToLog -text "Adding initial Admin user"
+                Write-ToLog -text "$tabcmd initialuser -s http://localhost -u $ts_admin_un -p $ts_admin_pass"
+                Start-Process $tabcmd -ArgumentList " initialuser -s http://localhost -u $ts_admin_un -p $ts_admin_pass"  -Wait
+                Write-ToLog -text "Initial Admin user added"
+            } 
+            catch
+            {
+                Write-ToLog -text $PSItem.Exception.Message
+            }
+}
 
-# function func_fw_Rules{
-#                         Write-ToLog -text "New-NetFirewallRule -DisplayName 'Open Inbound Port 80' -Direction Inbound -LocalPort 80 -Protocol TCP -Action Allow"
-#                         New-NetFirewallRule -DisplayName "Open Inbound Port 80" -Direction Inbound -LocalPort 80 -Protocol TCP -Action Allow
-#                         Write-ToLog -text "New-NetFirewallRule -DisplayName 'Open Inbound Port 8850' -Direction Inbound -LocalPort 8850 -Protocol TCP -Action Allow"
-#                         New-NetFirewallRule -DisplayName "Open Inbound Port 8850" -Direction Inbound -LocalPort 8850 -Protocol TCP -Action Allow
-# }
-# function func_AntiVirus(){
-#     #Disable antivirus scan for the folder that is being used during the installation
-#     Write-ToLog -text "Adding C:\Downloads to AV Exlusion"
-#     Add-MpPreference -ExclusionPath $folder
+function func_fw_Rules{
+                        Write-ToLog -text "New-NetFirewallRule -DisplayName 'Open Inbound Port 80' -Direction Inbound -LocalPort 80 -Protocol TCP -Action Allow"
+                        New-NetFirewallRule -DisplayName "Open Inbound Port 80" -Direction Inbound -LocalPort 80 -Protocol TCP -Action Allow
+                        Write-ToLog -text "New-NetFirewallRule -DisplayName 'Open Inbound Port 8850' -Direction Inbound -LocalPort 8850 -Protocol TCP -Action Allow"
+                        New-NetFirewallRule -DisplayName "Open Inbound Port 8850" -Direction Inbound -LocalPort 8850 -Protocol TCP -Action Allow
+}
+function func_AntiVirus(){
+    #Disable antivirus scan for the folder that is being used during the installation
+    Write-ToLog -text "Adding C:\Downloads to AV Exlusion"
+    Add-MpPreference -ExclusionPath $folder
 
-#     if((Test-Path HKLM:\SOFTWARE\Tableau\) -eq $true){
-#         $ts_install = (Get-Item "HKLM:\SOFTWARE\Tableau\Tableau Server *\Directories" | Get-ItemProperty | Select-Object Application).Application
-#         Write-ToLog -text $ts_install
+    if((Test-Path HKLM:\SOFTWARE\Tableau\) -eq $true){
+        $ts_install = (Get-Item "HKLM:\SOFTWARE\Tableau\Tableau Server *\Directories" | Get-ItemProperty | Select-Object Application).Application
+        Write-ToLog -text $ts_install
 
-#         $ts_data =  (Get-Item "HKLM:\SOFTWARE\Tableau\Tableau Server *\Directories" | Get-ItemProperty | Select-Object Data).Data   
-#         Write-ToLog -text $ts_data 
+        $ts_data =  (Get-Item "HKLM:\SOFTWARE\Tableau\Tableau Server *\Directories" | Get-ItemProperty | Select-Object Data).Data   
+        Write-ToLog -text $ts_data 
         
-#         Add-MpPreference -ExclusionPath $ts_install 
-#         Write-ToLog -text "Added Tableau server install folder to AntiVirus Exlusions"
-#         Add-MpPreference -ExclusionPath $ts_data 
-#         Write-ToLog -text "Added Tableau server data folder to AntiVirus Exlusions"
-#     }
-# }  
-# function func_cleanUp{
-#     Write-ToLog -text "Remove-Item -Path $($folder+$DownloadFile) -Force"
-#     Remove-Item -Path $($folder+$DownloadFile) -Force
-# }
+        Add-MpPreference -ExclusionPath $ts_install 
+        Write-ToLog -text "Added Tableau server install folder to AntiVirus Exlusions"
+        Add-MpPreference -ExclusionPath $ts_data 
+        Write-ToLog -text "Added Tableau server data folder to AntiVirus Exlusions"
+    }
+}  
+function func_cleanUp{
+    Write-ToLog -text "Remove-Item -Path $($folder+$DownloadFile) -Force"
+    Remove-Item -Path $($folder+$DownloadFile) -Force
+}
 function func_main(){
     func_createFolder
     func_regFile
     func_configFile
     func_Other
 
-    # #Set paramaters for the Tableau Server version
-    # func_Version -version $global:ts_build
-    # #Download Tableau server installation files
-    # func_Download  -folder $folder $log_file -event_file $event_file -version_major $global:major -version_minor $global:minor -version_hotfix $global:hotfix
-    # #Install Tableau server
-    # func_Install -log_path $log_file -file_path $($folder+$global:DownloadFile)
-    # #Configure tableau server
-    # func_Configure -folder $folder -reg_file $reg_file -iDP_config $iDP_config -log_file $log_file  -event_file $event_file -license_key $global:product_keys
-    # #func_AntiVirus
-    # func_fw_Rules
-    # func_cleanUp
+    #Set paramaters for the Tableau Server version
+    func_Version -version $global:ts_build
+    #Download Tableau server installation files
+    func_Download  -folder $folder $log_file -event_file $event_file -version_major $global:major -version_minor $global:minor -version_hotfix $global:hotfix
+    #Install Tableau server
+    func_Install -log_path $log_file -file_path $($folder+$global:DownloadFile)
+    #Configure tableau server
+    func_Configure -folder $folder -reg_file $reg_file -iDP_config $iDP_config -log_file $log_file  -event_file $event_file -license_key $global:product_keys
+    #func_AntiVirus
+    func_fw_Rules
+    func_cleanUp
 }
 
 func_main
