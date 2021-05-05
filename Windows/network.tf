@@ -2,7 +2,7 @@
 resource "azurerm_resource_group" "rg" {
   name     = "${var.prefix}-TFrg"
   location = var.location
-  tags = var.tags
+  tags = local.default_tags
 }
 
 # Create virtual network
@@ -11,6 +11,7 @@ resource "azurerm_virtual_network" "vnet" {
   address_space       = ["10.0.0.0/16"]
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
+  tags = local.default_tags
 }
 
 # Create subnet
@@ -27,6 +28,8 @@ resource "azurerm_public_ip" "publicip" {
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
   allocation_method   = "Static"
+  sku = var.public_ip_sku
+  tags = merge(local.default_tags, local.default_vm_tags)
 }
 
 # Create Network Security Group and rule
@@ -34,6 +37,7 @@ resource "azurerm_network_security_group" "nsg" {
   name                = "${var.prefix}-TFNSG"
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
+  tags = merge(local.default_tags, local.default_vm_tags)
 
   security_rule {
     name                       = "RDP"

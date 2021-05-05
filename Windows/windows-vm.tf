@@ -1,10 +1,3 @@
-# WinRM Research - this is closest to my lab https://github.com/jmassardo/Azure-WinRM-Terraform
-# WinRM in a domain -> http://www.anniehedgie.com/terraform-and-winrm
-# Sample tested on W2012R2 https://github.com/Azure/azure-quickstart-templates/tree/master/201-vm-winrm-windows
-# Later version with W2019 https://www.starwindsoftware.com/blog/azure-execute-commands-in-a-vm-through-terraform
-# NEED TO TEST IF WINRM IS LISTENING? https://stevenmurawski.com/2015/06/need-to-test-if-winrm-is-listening/
-# https://registry.terraform.io/modules/claranet/windows-vm/azurerm/latest
-
 # Create network interface
 resource "azurerm_network_interface" "nic" {
   name                      = "${var.prefix}-NIC"
@@ -17,6 +10,7 @@ resource "azurerm_network_interface" "nic" {
     private_ip_address_allocation = "dynamic"
     public_ip_address_id          = azurerm_public_ip.publicip.id
   }
+  tags = merge(local.default_tags, local.default_vm_tags)
 }
 
 # Create a Windows virtual machine
@@ -31,7 +25,8 @@ resource "azurerm_windows_virtual_machine" "windows_vm" {
   computer_name             = "${var.prefix}-TFVM"
   provision_vm_agent        = true
   enable_automatic_updates  = true
-  
+  tags = merge(local.default_tags, local.default_vm_tags)
+
   os_disk {
     name              = "${var.prefix}-OsDisk"
     caching           = "ReadWrite"
@@ -40,10 +35,10 @@ resource "azurerm_windows_virtual_machine" "windows_vm" {
   }
 
   source_image_reference {
-    publisher = "MicrosoftWindowsServer"
-    offer     = "WindowsServer"
-    sku       = "2019-Datacenter"
-    version   = "latest"
+    offer     = lookup(var.vm_image, "offer", null)
+    publisher = lookup(var.vm_image, "publisher", null)
+    sku       = lookup(var.vm_image, "sku", null)
+    version   = lookup(var.vm_image, "version", null)
   }
 }
 
@@ -72,7 +67,7 @@ resource "azurerm_virtual_machine_extension" "tableau" {
 
   settings = <<SETTINGS
     {
-        "fileUris": ["https://raw.githubusercontent.com/johnthompson365/terrazure-tableau/master/Windows/files/wintab-deploy-original.ps1"]
+        "fileUris": ["https://raw.githubusercontent.com/johnthompson365/terrazure-tableau/3220b71b4019c7b28ccf29d81fede7ff2d3d8928/Windows/files/wintab-deploy.ps1"]
     }
   SETTINGS
 }
