@@ -51,7 +51,7 @@ resource "azurerm_virtual_machine_extension" "tableau" {
   publisher            = "Microsoft.Compute"
   type                 = "CustomScriptExtension"
   type_handler_version = "1.10"
-# Keep on getting this error after 30 minutes but the installtakes longer, around 40 minutes! Error: Future#WaitForCompletion: context has been cancelled: StatusCode=200 -- Original Error: context deadline exceeded
+# Keep on getting this error after 30 minutes but the install takes longer, around 40 minutes! Error: Future#WaitForCompletion: context has been cancelled: StatusCode=200 -- Original Error: context deadline exceeded
  timeouts {
     create = "60m"
     delete = "2h"
