@@ -45,14 +45,13 @@ resource "azurerm_windows_virtual_machine" "windows_vm" {
 # https://github.com/MicrosoftDocs/azure-docs/issues/10862
 # https://docs.microsoft.com/en-us/cli/azure/vm/extension/image?view=azure-cli-latest
 # Found I had to use a minor version, not a patch e.g. 1.10 not 1.10.5 - Maybe I need to use the minor version upgrade thingy?
-# Keep on getting this error after 30 minutes but the installtakes longer, around 40 minutes! Error: Future#WaitForCompletion: context has been cancelled: StatusCode=200 -- Original Error: context deadline exceeded
 resource "azurerm_virtual_machine_extension" "tableau" {
   name                 = "${var.prefix}-TFVM"
   virtual_machine_id   = azurerm_windows_virtual_machine.windows_vm.id
   publisher            = "Microsoft.Compute"
   type                 = "CustomScriptExtension"
   type_handler_version = "1.10"
-
+# Keep on getting this error after 30 minutes but the installtakes longer, around 40 minutes! Error: Future#WaitForCompletion: context has been cancelled: StatusCode=200 -- Original Error: context deadline exceeded
  timeouts {
     create = "60m"
     delete = "2h"
@@ -61,7 +60,7 @@ resource "azurerm_virtual_machine_extension" "tableau" {
 
   protected_settings = <<PROTECTED_SETTINGS
     {
-      "commandToExecute": "powershell.exe -Command \"./wintab-deploy-original.ps1; exit 0;\""
+      "commandToExecute": "powershell.exe -Command \"./wintab-deploy.ps1; exit 0;\""
     }
   PROTECTED_SETTINGS
 
