@@ -57,12 +57,10 @@ resource "azurerm_virtual_machine_extension" "tableau" {
     delete = "2h"
   }
 
-
-  protected_settings = <<PROTECTED_SETTINGS
-    {
-      "commandToExecute": "powershell.exe -Command \"./wintab-deploy.ps1; exit 0;\""
-    }
-  PROTECTED_SETTINGS
+# "commandToExecute": "powershell.exe -Command \"./wintab-deploy.ps1; exit 0;\""
+  protected_settings = jsonencode({
+      commandToExecute:local.powershell_command_for_cmd
+    })
 
   settings = <<SETTINGS
     {

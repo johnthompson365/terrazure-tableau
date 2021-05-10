@@ -60,3 +60,13 @@ variable "vm_image" {
     version   = "latest"
   }
 }
+
+variable "URL_download" {
+  type = string
+  description = "Download URL for Tableau Server"
+  }
+
+variable "Folder_download" {
+  type = string
+  description = "Download Folder for Tableau Server"
+  }
