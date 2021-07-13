@@ -7,7 +7,8 @@
     [ValidateNotNullOrEmpty()]
     [string]$Folder
     )
-    
+
+# Re-write the problem line completely, and if not remove it...
 function Create_Folder {
     
     try {

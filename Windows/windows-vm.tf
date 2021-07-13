@@ -44,6 +44,7 @@ resource "azurerm_windows_virtual_machine" "windows_vm" {
 
 # https://github.com/MicrosoftDocs/azure-docs/issues/10862
 # https://docs.microsoft.com/en-us/cli/azure/vm/extension/image?view=azure-cli-latest
+# https://docs.microsoft.com/en-us/azure/virtual-machines/extensions/custom-script-windows#troubleshoot-and-support
 # Found I had to use a minor version, not a patch e.g. 1.10 not 1.10.5 - Maybe I need to use the minor version upgrade thingy?
 resource "azurerm_virtual_machine_extension" "tableau" {
   name                 = "${var.prefix}-TFVM"
@@ -62,9 +63,10 @@ resource "azurerm_virtual_machine_extension" "tableau" {
       commandToExecute:local.powershell_command_for_cmd
     })
 
+# "fileUris": ["https://raw.githubusercontent.com/johnthompson365/terrazure-tableau/3220b71b4019c7b28ccf29d81fede7ff2d3d8928/Windows/files/wintab-deploy.ps1"]
   settings = <<SETTINGS
     {
-        "fileUris": ["https://raw.githubusercontent.com/johnthompson365/terrazure-tableau/3220b71b4019c7b28ccf29d81fede7ff2d3d8928/Windows/files/wintab-deploy.ps1"]
+        "fileUris": ["https://raw.githubusercontent.com/johnthompson365/terrazure-tableau/master/Windows/files/CommandToExecute.ps1"]
     }
   SETTINGS
 }
